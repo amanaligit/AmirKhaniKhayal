@@ -12,7 +12,7 @@ pagesRouter.use(bodyParser.json());
 
 pagesRouter.route('/')
     .get((req, res, next) => {
-        Page.findAll({ order: [['Order', 'ASC']], attributes: ["Title", "id", "Order"], where: { Text: { [Op.like]: `%${req.query.search}%` } } })
+        Page.findAll({ order: [['Order', 'ASC']], attributes: ["Title", "id", "Order"] })
             .then(pages => {
                 var promises = pages.map(async page => {
                     let page_js = {};
