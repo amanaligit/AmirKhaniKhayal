@@ -8,7 +8,7 @@ import { Markup } from 'interweave';
 
 function Home(props) {
 
-    const [toggle, setToggle] = useState(window.innerWidth <= 760 ? false : true);
+    const [toggle, setToggle] = useState(true);
     const [pages, setPages] = useState([]);
     const [currentPage, setCurrentPage] = useState({ id: 1, subpageId: null, HTML: "" });
     const [loading, setLoading] = useState(true);
@@ -30,6 +30,9 @@ function Home(props) {
                 // console.log(response);
                 setCurrentPage(c => { return { ...c, HTML: response.data } });
                 setLoading(false);
+                if (window.innerWidth <= 768) {
+                    setToggle(toggle => !toggle);
+                }
             })
             .catch(error => {
                 setLoading(false);
@@ -42,29 +45,28 @@ function Home(props) {
     const pageContent = pages.map(page => {
         return (
 
-                <li className="active" key={page.id}>
-                    {page.subpages.length ?
-                        <React.Fragment>
-                            <a
-                                href={`#menu${page.id}`}
+            <li className="active" key={page.id}>
+                {page.subpages.length ?
+                    <React.Fragment>
+                        <a
+                            href={`#menu${page.id}`}
+                            data-toggle="collapse"
+                            aria-expanded="false"
+                            className="dropdown-toggle"
 
-                                data-toggle="collapse"
-                                aria-expanded="false"
-                                className="dropdown-toggle"
-
-                            ><span onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: null })}> {page.Title}</span></a>
-                            <ul className="collapse list-unstyled" id={`menu${page.id}`} key={page.id}>
-                                {page.subpages.map(subpage => {
-                                    return (<li key={subpage.id}>
-                                        <a onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: subpage.id })}>{subpage.Title}</a>
-                                    </li>)
-                                })}
-                            </ul>
-                        </React.Fragment>
-                        :
-                        <a><span onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: null })}> {page.Title}</span></a>
-                    }
-                </li>
+                        ><span onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: null })}> {page.Title}</span></a>
+                        <ul className="collapse list-unstyled" id={`menu${page.id}`} key={page.id}>
+                            {page.subpages.map(subpage => {
+                                return (<li key={subpage.id}>
+                                    <a href="#/" onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: subpage.id })}>{subpage.Title}</a>
+                                </li>)
+                            })}
+                        </ul>
+                    </React.Fragment>
+                    :
+                    <a><span onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: null })}> {page.Title}</span></a>
+                }
+            </li>
 
         )
     });
@@ -72,34 +74,41 @@ function Home(props) {
 
     return (
         <div className="wrapper">
-            <div>
-
-            </div>
             <nav id="sidebar" className={toggle ? "" : "active"}>
                 <div className="sidebar-header">
-                    <h3>Bootstrap Slider</h3>
+                    {toggle ? <button type="button" id="sidebarCollapse" className="btn btn-info" onClick={() => setToggle(t => !t)}>
+                        <FontAwesomeIcon icon={toggle ? faToggleOn : faToggleOff} />
+                            Hide Index
+                        </button> : null}
                 </div>
                 <ul className="lisst-unstyled components">
                     <p>Index</p>
                     {pageContent}
                 </ul>
             </nav>
+            {toggle && window.innerWidth <= 768 ?
+                null
+                :
+                <div id="content">
+                    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                        <div className="container-fluid">
+                            {!toggle ?
+                                <button type="button" id="sidebarCollapse" className="btn btn-info" onClick={() => setToggle(t => !t)}>
+                                    <FontAwesomeIcon icon={toggle ? faToggleOn : faToggleOff} />
+                                     Show Index
+                                </button>
+                                : null
+                            }
 
-            <div id="content">
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <div className="container-fluid">
+                        </div>
+                    </nav>
 
-                        <button type="button" id="sidebarCollapse" className="btn btn-info" onClick={() => setToggle(t => !t)}>
-                            <FontAwesomeIcon icon={toggle ? faToggleOn : faToggleOff} />
-                            {toggle ? " Hide" : " Show"} Index
-                        </button>
-                    </div>
-                </nav>
+                    <br />
+                    <Markup content={currentPage.HTML} />
 
-                <br />
-                <Markup content={currentPage.HTML} />
+                </div>
+            }
 
-            </div>
         </div>
     );
 }

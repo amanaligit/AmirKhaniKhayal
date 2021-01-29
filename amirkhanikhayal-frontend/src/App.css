@@ -83,7 +83,7 @@ a:focus {
 /* Side Bar*/
 
 #sidebar.active {
-  margin-left: -250px;
+  margin-left: -20rem;
 }
 .wrapper {
   display: flex;
@@ -92,8 +92,8 @@ a:focus {
 }
 
 #sidebar {
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 20rem;
+  max-width: 20rem;
   background: #7386d5;
   color: #fff;
   transition: all 0.3s;
@@ -153,17 +153,16 @@ ul ul a {
   transition: all 0.3s;
 }
 
-/* @media (max-width: 768px) {
+@media (max-width: 768px) {
   #sidebar {
-    margin-left: -250px;
+    min-width: 100%;
+    max-width: 100%;
+
   }
   #sidebar.active {
-    margin-left: 0;
+    margin-left: -100%;
   }
-  #sidebarCollapse span {
-    display: none;
-  }
-} */
+}
 
 /*---Media Queries --*/
 @media (max-width: 992px) {
