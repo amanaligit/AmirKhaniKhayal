@@ -7,7 +7,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import AuthenticationButton from "./authentication-button";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPersonBooth, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faPersonBooth, faUser } from '@fortawesome/free-solid-svg-icons';
 
 class Header extends Component {
 
@@ -59,7 +59,7 @@ class Header extends Component {
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/home">
+                                    <NavLink className="nav-link" to="" exact>
                                         <span className="fa fa-home fa-lg"></span> Home
                                     </NavLink>
                                 </NavItem>
@@ -86,6 +86,12 @@ class Header extends Component {
                                 <NavItem>
                                     <NavLink className="nav-link" to="/profile" exact>
                                         <FontAwesomeIcon icon={faUser} /> Profile
+                                    </NavLink>
+
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink className="nav-link" to="/posts" exact>
+                                        <FontAwesomeIcon icon={faPencilAlt} /> Posts
                                     </NavLink>
 
                                 </NavItem>

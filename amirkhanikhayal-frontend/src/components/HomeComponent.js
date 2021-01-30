@@ -18,7 +18,7 @@ function Home(props) {
     const {isAuthenticated} = useAuth0();
 
     useEffect(() => {
-        axios.get("http://localhost:3000/pagerouter")
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/pagerouter`)
             .then(response => {
                 setPages(response.data);
             })
@@ -29,7 +29,7 @@ function Home(props) {
 
     useEffect(() => {
         const path = currentPage.subpageId ? `/${currentPage.id}/subpages/${currentPage.subpageId}.html` : `/${currentPage.id}/${currentPage.id}.html`
-        axios.get(`http://localhost:3000/pages${path}`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/pages${path}`)
             .then(response => {
                 // console.log(response);
                 setCurrentPage(c => { return { ...c, HTML: response.data } });
