@@ -5,12 +5,9 @@ import './App.css';
 
 function App() {
   return (
-
-      <BrowserRouter>
         <div>
           <Main />
         </div>
-      </BrowserRouter>
   );
 }
 

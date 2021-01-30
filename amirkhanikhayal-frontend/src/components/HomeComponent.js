@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHandHoldingMedical, faSearch, faSpinner, faToggleOff, faToggleOn } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { Markup } from 'interweave';
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 function Home(props) {
@@ -15,6 +15,7 @@ function Home(props) {
     const [search, setSearch] = useState("");
     const [searchFromClick, setSteachFromClick] = useState("");
     const [searchResults, setSearchResults] = useState({ pages: [], subpages: [] });
+    const {isAuthenticated} = useAuth0();
 
     useEffect(() => {
         axios.get("http://localhost:3000/pagerouter")
