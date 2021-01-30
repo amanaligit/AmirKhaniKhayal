@@ -25,7 +25,7 @@ export default function MainComponent() {
                 <Switch>
                     <Route path="/" exact component={() => <Home></Home>} />
                     <ProtectedRoute path="/profile" exact component={() => <Profile />} />
-                    <ProtectedRoute path="/posts" exact component={Posts}/>
+                    <Route path="/posts" exact component={Posts}/>
                 </Switch>
             </div>
             <Footer />

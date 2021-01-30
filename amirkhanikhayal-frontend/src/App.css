@@ -35,6 +35,12 @@
   margin: 0 auto;
 }
 
+.center {
+  display: flex  !important; 
+  justify-content: center  !important;
+  align-items: center !important;
+}
+
 address{
     font-size:80%;
     margin:0px;

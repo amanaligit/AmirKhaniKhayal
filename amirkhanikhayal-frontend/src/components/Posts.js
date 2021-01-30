@@ -1,108 +1,103 @@
 // src/views/external-api.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
+import Loading from "./loading";
+import { useForm } from "react-hook-form";
+
 
 const Posts = () => {
-  const [message, setMessage] = useState("");
+
   const serverUrl = process.env.REACT_APP_SERVER_URL;
-
   const { getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postError, setPostError] = useState(null);
 
-  const callApi = async () => {
-    try {
-      const response = await fetch(`${serverUrl}/postsrouter/public-message`);
 
-      const responseData = await response.json();
 
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage(error.message);
-    }
+  const { register, handleSubmit, errors } = useForm();
+
+  const onSubmit = async data => {
+    data.name = user.name;
+    data.email = user.email;
+    data.image = user.picture;
+    const token = await getAccessTokenSilently();
+    axios.post(`${serverUrl}/postsrouter/`, data, { headers: { Authorization: `Bearer ${token}` } })
+    .then(response => {
+      if (response.status === 200) {
+        setPosts(posts => [response.data, ...posts]);
+      }
+      else{
+        setPostError(response.data)
+      }
+    }).catch(err => setPostError(`${err.name}: ${err.message}`))
+
   };
 
-  const callSecureApi = async () => {
-    try {
-      const token = await getAccessTokenSilently();
+  useEffect(() => {
+    axios.get(`${serverUrl}/postsrouter/`)
+      .then(response => {
+        setPostsLoading(false);
+        setPosts(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+        setPostsLoading(false);
+      })
+  }, [serverUrl])
 
-      const response = await fetch(
-        `${serverUrl}/postsrouter/protected-message`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const responseData = await response.json();
-        console.log(responseData.message);
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage("error occured");
-    }
-  };
-
-  const callRoleBasedApi = async () => {
-    try {
-      const token = await getAccessTokenSilently();
-
-      const response = await fetch(
-        `${serverUrl}/postsrouter/role-based-message`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const responseData = await response.json();
-
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage("error occured");
-    }
-  };
 
   return (
-    <div className="container">
-      <h1>External API</h1>
-      <p>
-        Use these buttons to call an external API. The protected API call has an
-        access token in its authorization header. The API server will validate
-        the access token using the Auth0 Audience value.
-      </p>
-      <div
-        className="btn-group mt-5"
-        role="group"
-        aria-label="External API Requests Examples"
-      >
-        <button type="button" className="btn btn-primary" onClick={callApi}>
-          Get Public Message
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={callSecureApi}
-        >
-          Get Protected Message
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={callRoleBasedApi}
-        >
-         Get Role Based Endpoint
-        </button>
-      </div>
-      {message && (
-        <div className="mt-5">
-          <h6 className="muted">Result</h6>
-          <div className="container-fluid">
-            <div className="row">
-              <code className="col-12 text-light bg-dark p-4">{message}</code>
-            </div>
+    <div className="container-fluid">
+      <h1>Posts</h1>
+
+      {isAuthenticated &&
+        <form className="form-group" onSubmit={handleSubmit(onSubmit)}>
+          {/* register your input into the hook by invoking the "register" function */}
+          <div className="form-group">
+            <label htmlFor="male">Title</label>
+            <input name="title" className="form-control" ref={register({ required: true })} />
+            {errors.title &&
+              <div class="alert alert-danger mt-2">
+                <span>Title is required</span>
+              </div>
+            }
           </div>
-        </div>
+          <div className="form-group">
+            <label htmlFor="male">Text</label>
+            <textarea type="text-area" name="text" className={errors.exampleRequired ? "is-invalid form-control" : "form-control"} style={{ height: "200px" }} ref={register({ required: true })} />
+            {errors.text &&
+              <div class="alert alert-danger mt-2">
+                <span>This field is required</span>
+              </div>
+            }
+
+          </div>
+
+          {/* include validation with required or other standard HTML validation rules */}
+
+          {/* errors will return when field validation fails  */}
+
+
+          <input type="submit" className="btn btn-primary center" />
+          {postError &&
+            <div class="alert alert-danger mt-2">
+              <span>{postError}</span>
+            </div>}
+        </form>}
+
+
+
+      { postsLoading ? <Loading /> : (
+        <>
+          <h6 className="muted">Result</h6>
+          <pre className=" text-light bg-dark p-4" >
+            {JSON.stringify(posts, null, 1)}
+          </pre>
+        </>
       )}
     </div>
   );
