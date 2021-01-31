@@ -1,19 +1,30 @@
 const models = require('./models');
-const Page = models.Pages;
-const SubPage = models.SubPages
+const User = models.User;
+const Post = models.Post;
 
 
 
-
-Page.findOne({where: {id:1}})
-.then(page=> {
-    //console.log(page)
-    page.getSubPages()
-    .then(subpages=> {
-        subpages_map = subpages.map(page=>page.Title);
-        console.log(subpages_map);
+// Post.bulkCreate([
+//     {title: "Lorem, ipsum.", Name: 'John',  sub: 'DOE'},
+//     {email: 'log_w@domain.com', Name: 'Logan',  sub: 'WOLVERINE' },
+//     {email: 'john-connor@domain.com', Name: 'John',  sub: 'CONNOR'}
+//   ]).then((newUsers) => {
+//     console.log(newUsers)
+//   })
+//   .catch((err) => {
+//     console.log("Error while users creation : ", err)
+//   })
+Post.findAll()
+    .then(posts => {
+        promises = posts.map(async post => {
+            let author = await post.getUser();
+            author = author.toJSON();
+            return { title: post.title, text: post.text, author }
+        })
+        Promise.all(promises)
+            .then(result => {
+                console.log(result);
+            })
     })
-})
-.catch((err) => {
-    console.log("Error while users creation : ", err)
-})
+
+

@@ -36,7 +36,7 @@ pagesRouter.route('/search')
         Page.findAll({ order: [['Order', 'ASC']], attributes: ["Title", "id", "Order"], where: { Text: { [Sequelize.Op.iLike]: `%${req.query.params}%` } } })
             .then(pages => {
                 let response = { pages };
-                SubPage.findAll({ order: [['Order', 'ASC']], attributes: ["Title", "id", "Order"], where: { Text: { [Sequelize.Op.iLike]: `%${req.query.params}%` } } })
+                SubPage.findAll({ order: [['Order', 'ASC']], attributes: ["Title", "id", "Order", "PageId"], where: { Text: { [Sequelize.Op.iLike]: `%${req.query.params}%` } } })
                     .then(subpages => {
                         response.subpages = subpages;
                         res.statusCode = 200;

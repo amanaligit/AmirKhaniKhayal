@@ -9,8 +9,11 @@ var usersRouter = require('./routes/users');
 var pagesRouter = require('./routes/pagesRouter');
 const cors = require('cors');
 var app = express();
-
+const { clientOrigins, serverPort } = require("./config/env.dev");
+const helmet = require("helmet");
+const postsRouter = require("./routes/postsRouter");
 app.use(logger('dev'));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -20,6 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/pagerouter', pagesRouter);
+app.use('/postsrouter', postsRouter);
+
 
 
 // catch 404 and forward to error handler

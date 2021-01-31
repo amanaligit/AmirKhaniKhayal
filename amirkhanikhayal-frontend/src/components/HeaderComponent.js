@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Jumbotron,
+import {
+    Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Jumbotron,
     Button, Modal, ModalHeader, ModalBody,
-    Form, FormGroup, Input, Label } from 'reactstrap';
+    Form, FormGroup, Input, Label
+} from 'reactstrap';
 import { NavLink } from 'react-router-dom';
+import AuthenticationButton from "./authentication-button";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt, faPersonBooth, faUser } from '@fortawesome/free-solid-svg-icons';
 
 class Header extends Component {
 
@@ -32,7 +37,7 @@ class Header extends Component {
 
     handleLogin(event) {
         this.toggleModal();
-        this.props.loginUser({username: this.username.value, password: this.password.value});
+        this.props.loginUser({ username: this.username.value, password: this.password.value });
         event.preventDefault();
 
     }
@@ -42,7 +47,7 @@ class Header extends Component {
     }
 
     render() {
-        return(
+        return (
             <React.Fragment>
                 <Navbar dark expand="md">
                     <div className="container">
@@ -54,7 +59,7 @@ class Header extends Component {
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/home">
+                                    <NavLink className="nav-link" to="" exact>
                                         <span className="fa fa-home fa-lg"></span> Home
                                     </NavLink>
                                 </NavItem>
@@ -78,13 +83,23 @@ class Header extends Component {
                                         <span className="fa fa-address-card fa-lg"></span> Contact Us
                                     </NavLink>
                                 </NavItem>
+                                <NavItem>
+                                    <NavLink className="nav-link" to="/profile" exact>
+                                        <FontAwesomeIcon icon={faUser} /> Profile
+                                    </NavLink>
+
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink className="nav-link" to="/posts" exact>
+                                        <FontAwesomeIcon icon={faPencilAlt} /> Posts
+                                    </NavLink>
+
+                                </NavItem>
                             </Nav>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
-                                  
-                                        <Button outline onClick={this.toggleModal}>
-                                            <span className="fa fa-sign-in fa-lg"></span> Login
-                                        </Button>
+                                    <AuthenticationButton />
+
 
 
                                 </NavItem>
@@ -114,16 +129,16 @@ class Header extends Component {
                             <FormGroup>
                                 <Label htmlFor="password">Password</Label>
                                 <Input type="password" id="password" name="password"
-                                    innerRef={(input) => this.password = input}  />
+                                    innerRef={(input) => this.password = input} />
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>
                                     <Input type="checkbox" name="remember"
-                                    innerRef={(input) => this.remember = input}  />
+                                        innerRef={(input) => this.remember = input} />
                                     Remember me
                                 </Label>
                             </FormGroup>
-                            <Button type="submit" value="submit" color="primary">Login</Button>
+
                         </Form>
                     </ModalBody>
                 </Modal>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faToggleOff, faToggleOn } from '@fortawesome/free-solid-svg-icons'
+import { faHandHoldingMedical, faSearch, faSpinner, faToggleOff, faToggleOn } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { Markup } from 'interweave';
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 function Home(props) {
@@ -12,9 +12,13 @@ function Home(props) {
     const [pages, setPages] = useState([]);
     const [currentPage, setCurrentPage] = useState({ id: 1, subpageId: null, HTML: "" });
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
+    const [searchFromClick, setSteachFromClick] = useState("");
+    const [searchResults, setSearchResults] = useState({ pages: [], subpages: [] });
+    const {isAuthenticated} = useAuth0();
 
     useEffect(() => {
-        axios.get("http://localhost:3000/pagerouter")
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/pagerouter`)
             .then(response => {
                 setPages(response.data);
             })
@@ -25,7 +29,7 @@ function Home(props) {
 
     useEffect(() => {
         const path = currentPage.subpageId ? `/${currentPage.id}/subpages/${currentPage.subpageId}.html` : `/${currentPage.id}/${currentPage.id}.html`
-        axios.get(`http://localhost:3000/pages${path}`)
+        axios.get(`${process.env.REACT_APP_SERVER_URL}/pages${path}`)
             .then(response => {
                 // console.log(response);
                 setCurrentPage(c => { return { ...c, HTML: response.data } });
@@ -39,6 +43,23 @@ function Home(props) {
             });
     }, [currentPage.id, currentPage.subpageId]);
 
+    useEffect(() => {
+        if (searchFromClick !== "") {
+            axios.get(`http://localhost:3000/pagerouter/search`, { params: { params: searchFromClick } })
+                .then(response => {
+                    console.log(response);
+                    // setCurrentPage(c => { return { ...c, HTML: response.data } });
+                    setLoading(false);
+                    setSearchResults(response.data);
+                    // if (window.innerWidth <= 768) {
+                    //     setToggle(toggle => !toggle);
+                    // }
+                })
+                .catch(error => {
+                    setLoading(false);
+                });
+        }
+    }, [searchFromClick])
 
 
 
@@ -71,16 +92,50 @@ function Home(props) {
         )
     });
 
+    const searchResultsPages = searchResults.pages.map(page => {
+        return (<li key={page.id}>
+            <a onClick={() => setCurrentPage({ ...currentPage, id: page.id, subpageId: null })}> {page.Title}</a>
+        </li>)
+    });
+
+    const searchResultsSubpages = searchResults.subpages.map(page => {
+        return (<li key={page.id}>
+            <a onClick={() => setCurrentPage({ ...currentPage, id: page.PageId, subpageId: page.id })}> {page.Title}</a>
+        </li>)
+    });
+
+
+
 
     return (
         <div className="wrapper">
             <nav id="sidebar" className={toggle ? "" : "active"}>
-                <div className="sidebar-header">
+                <div className="sidebar-header" >
                     {toggle ? <button type="button" id="sidebarCollapse" className="btn btn-info" onClick={() => setToggle(t => !t)}>
                         <FontAwesomeIcon icon={toggle ? faToggleOn : faToggleOff} />
                             Hide Index
                         </button> : null}
                 </div>
+                <div className="input-group" style={{ marginLeft: "35px" }}>
+                    <div className="form-outline">
+                        <input type="search" className="form-control" value={search} onChange={e => setSearch(e.target.value)} />
+                    </div>
+                    <button type="button" className="btn btn-primary" onClick={() => setSteachFromClick(search)}>
+                        <FontAwesomeIcon icon={faSearch} />
+                    </button>
+                </div>
+
+                <>
+                    <ul>
+                        {
+                            searchResultsPages
+                        }
+                        {
+                            searchResultsSubpages
+                        }
+                    </ul>
+                </>
+
                 <ul className="lisst-unstyled components">
                     <p>Index</p>
                     {pageContent}
@@ -97,14 +152,17 @@ function Home(props) {
                                     <FontAwesomeIcon icon={toggle ? faToggleOn : faToggleOff} />
                                      Show Index
                                 </button>
-                                : null
+                                :
+                                null
                             }
 
                         </div>
                     </nav>
 
                     <br />
+
                     <Markup content={currentPage.HTML} />
+
 
                 </div>
             }
