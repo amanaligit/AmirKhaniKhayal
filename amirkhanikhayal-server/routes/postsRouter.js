@@ -14,7 +14,7 @@ const postsRouter = express.Router();
 postsRouter.use(bodyParser.json());
 const models = require('../models');
 var createError = require('http-errors');
-const { response } = require('../app');
+const { response, request } = require('../app');
 const Sequelize = require('sequelize');
 
 
@@ -28,12 +28,12 @@ const Post = models.Post;
 
 postsRouter.route("/")
     .get((req, res) => {
-        Post.findAll({order: [['createdAt', 'DESC']]})
+        Post.findAll({ order: [['createdAt', 'DESC']] })
             .then(posts => {
                 promises = posts.map(async post => {
-                    let author = await post.getUser();
+                    let author = await post.getUser({ attributes: ["Name", "image"] });
                     author = author.toJSON();
-                    return { title: post.title, text: post.text, author }
+                    return { title: post.title, text: post.text, author, id: post.id }
                 })
                 Promise.all(promises)
                     .then(result => {
@@ -41,7 +41,7 @@ postsRouter.route("/")
                     })
             })
     })
-    .post(checkJwt, checkPermissions,(req, res) => {
+    .post(checkJwt, checkPermissions, (req, res) => {
         User.findOne({ where: { sub: req.user.sub } })
             .then(async user => {
                 if (!user) {
@@ -51,38 +51,28 @@ postsRouter.route("/")
                     .then(async post => {
                         let author = await post.getUser();
                         author = author.toJSON();
-                        res.status(200).send({ title: post.title, text: post.text, author })
+                        res.status(200).send({ title: post.title, text: post.text, author, id: post.id })
                     }
                     )
             })
     })
-// .post(checkJwt, checkPermissions, (req, res) => {
-//     User.findOne({ where: { sub: req.user.sub } })
-//         .then(async user => {
-//             if (!user) {
-//                 user = await User.create({sub: req.user.sub, email: req.body.email, Name: req.body.name, image: req.body.image});
-//             }
-//             Post.create({title: req.body.title, text: req.body.text, UserId: user.id})
-//             .then(result=>
-//                 res.status(200).send(result)
-//             )
-//         })
-// })
 
-// postsRouter.get("/protected-message", checkJwt, (req, res) => {
-//     console.log(req.user);
-//     const message = {
-//         message: "The API successfully validated your access token.",
-//     };
-//     res.status(200).send(message);
-// });
+postsRouter.route('/:postId')
+    .delete(checkJwt, checkPermissions, (req, res) => {
+        Post.findOne({ id: req.params.postId })
+            .then(post => {
+                if (post) {
+                    post.destroy()
+                        .then(post => {
+                            res.status(200).send();
+                        })
+                }
+                else{
+                    res.status(404).send();
+                }
 
-// postsRouter.get("/role-based-message", checkJwt, checkPermissions, (req, res) => {
+            })
+    })
 
-//     const message = {
-//         message: "The API successfully validated your access token and role.",
-//     };
-//     res.status(200).send(message);
-// });
 
 module.exports = postsRouter;

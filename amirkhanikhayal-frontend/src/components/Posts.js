@@ -5,7 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import Loading from "./loading";
 import { useForm } from "react-hook-form";
-
+import PostComponent from "./PostComponent";
 
 const Posts = () => {
 
@@ -16,7 +16,7 @@ const Posts = () => {
   const [postsLoading, setPostsLoading] = useState(true);
   const [postError, setPostError] = useState(null);
 
-
+  
 
   const { register, handleSubmit, errors } = useForm();
 
@@ -93,10 +93,11 @@ const Posts = () => {
 
       { postsLoading ? <Loading /> : (
         <>
-          <h6 className="muted">Result</h6>
+          {/* <h6 className="muted">Result</h6>
           <pre className=" text-light bg-dark p-4" >
             {JSON.stringify(posts, null, 1)}
-          </pre>
+          </pre> */}
+          {posts.map(post=><PostComponent key={post.id} post={post} setPosts={setPosts}/>)}
         </>
       )}
     </div>
