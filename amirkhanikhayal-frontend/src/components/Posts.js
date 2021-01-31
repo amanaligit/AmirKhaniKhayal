@@ -6,6 +6,12 @@ import axios from "axios";
 import Loading from "./loading";
 import { useForm } from "react-hook-form";
 import PostComponent from "./PostComponent";
+import DeleteModal from "./DeleteModal";
+import EditModal from "./EditModal"
+import NewPostModal from "./NewPostModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import LoadingSmall from "./LoadingSmall";
 
 const Posts = () => {
 
@@ -15,27 +21,13 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(true);
   const [postError, setPostError] = useState(null);
+  const [isDeleteModalOpen, toggleDeleteModal] = useState(false);
+  const [deletePost, setDeletePost] = useState(null);
+  const [isEditModalOpen, toggleEditModal] = useState(false);
+  const [editPost, setEditPost] = useState(null);
+  const [isNewPostModalOpen, toggleNewPostModal] = useState(false);
+  const [loadingError, setLoadingError] = useState(null);
 
-  
-
-  const { register, handleSubmit, errors } = useForm();
-
-  const onSubmit = async data => {
-    data.name = user.name;
-    data.email = user.email;
-    data.image = user.picture;
-    const token = await getAccessTokenSilently();
-    axios.post(`${serverUrl}/postsrouter/`, data, { headers: { Authorization: `Bearer ${token}` } })
-    .then(response => {
-      if (response.status === 200) {
-        setPosts(posts => [response.data, ...posts]);
-      }
-      else{
-        setPostError(response.data)
-      }
-    }).catch(err => setPostError(`${err.name}: ${err.message}`))
-
-  };
 
   useEffect(() => {
     axios.get(`${serverUrl}/postsrouter/`)
@@ -43,61 +35,30 @@ const Posts = () => {
         setPostsLoading(false);
         setPosts(response.data);
       })
-      .catch(error => {
-        console.log(error);
+      .catch(err => {
         setPostsLoading(false);
+        setLoadingError(`${err.name}: ${err.message}`);
       })
   }, [serverUrl])
 
 
   return (
-    <div className="container-fluid">
-      <h1>Posts</h1>
-
+    <div className="container">
       {isAuthenticated &&
-        <form className="form-group" onSubmit={handleSubmit(onSubmit)}>
-          {/* register your input into the hook by invoking the "register" function */}
-          <div className="form-group">
-            <label htmlFor="male">Title</label>
-            <input name="title" className="form-control" ref={register({ required: true })} />
-            {errors.title &&
-              <div class="alert alert-danger mt-2">
-                <span>Title is required</span>
-              </div>
-            }
-          </div>
-          <div className="form-group">
-            <label htmlFor="male">Text</label>
-            <textarea type="text-area" name="text" className={errors.exampleRequired ? "is-invalid form-control" : "form-control"} style={{ height: "200px" }} ref={register({ required: true })} />
-            {errors.text &&
-              <div class="alert alert-danger mt-2">
-                <span>This field is required</span>
-              </div>
-            }
-
-          </div>
-
-          {/* include validation with required or other standard HTML validation rules */}
-
-          {/* errors will return when field validation fails  */}
-
-
-          <input type="submit" className="btn btn-primary center" />
-          {postError &&
-            <div class="alert alert-danger mt-2">
-              <span>{postError}</span>
-            </div>}
-        </form>}
-
-
-
-      { postsLoading ? <Loading /> : (
         <>
-          {/* <h6 className="muted">Result</h6>
-          <pre className=" text-light bg-dark p-4" >
-            {JSON.stringify(posts, null, 1)}
-          </pre> */}
-          {posts.map(post=><PostComponent key={post.id} post={post} setPosts={setPosts}/>)}
+          <button className="btn btn-primary btn-lg mt-5 mb-2" onClick={() => toggleNewPostModal(true)}><FontAwesomeIcon icon={faPencilAlt} />New Post</button>
+          <DeleteModal isModalOpen={isDeleteModalOpen} toggleModal={toggleDeleteModal} post={deletePost} setPosts={setPosts} />
+          <EditModal isModalOpen={isEditModalOpen} toggleModal={toggleEditModal} post={editPost} setPosts={setPosts} />
+          <NewPostModal isModalOpen={isNewPostModalOpen} toggleModal={toggleNewPostModal} setPosts={setPosts} />
+        </>}
+
+      <h1>Posts</h1>
+      { loadingError && <div class="alert alert-danger mt-2">
+        <span>{loadingError}</span>
+      </div>}
+      { postsLoading ? <LoadingSmall /> : (
+        <>
+          {posts.map(post => <PostComponent key={post.id} post={post} setPosts={setPosts} setDeletePost={setDeletePost} toggleDeleteModal={toggleDeleteModal} toggleEditModal={toggleEditModal} setEditPost={setEditPost} />)}
         </>
       )}
     </div>

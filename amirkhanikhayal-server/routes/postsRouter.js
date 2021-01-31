@@ -33,7 +33,7 @@ postsRouter.route("/")
                 promises = posts.map(async post => {
                     let author = await post.getUser({ attributes: ["Name", "image"] });
                     author = author.toJSON();
-                    return { title: post.title, text: post.text, author, id: post.id }
+                    return { title: post.title, text: post.text, author, id: post.id, createdAt: post.createdAt }
                 })
                 Promise.all(promises)
                     .then(result => {
@@ -51,7 +51,7 @@ postsRouter.route("/")
                     .then(async post => {
                         let author = await post.getUser();
                         author = author.toJSON();
-                        res.status(200).send({ title: post.title, text: post.text, author, id: post.id })
+                        res.status(200).send({ title: post.title, text: post.text, author, id: post.id, createdAt: post.createdAt  })
                     }
                     )
             })
@@ -59,7 +59,7 @@ postsRouter.route("/")
 
 postsRouter.route('/:postId')
     .delete(checkJwt, checkPermissions, (req, res) => {
-        Post.findOne({ id: req.params.postId })
+        Post.findOne({where:{ id: req.params.postId }})
             .then(post => {
                 if (post) {
                     post.destroy()
@@ -69,6 +69,24 @@ postsRouter.route('/:postId')
                 }
                 else{
                     res.status(404).send();
+                }
+
+            })
+    })
+    .put(checkJwt, checkPermissions, (req, res) => {
+        console.log(req.params.postId);
+        Post.findOne({where:{ id: req.params.postId }})
+            .then(post => {
+                if (post) {
+                    post.title = req.body.title;
+                    post.text = req.body.text;
+                    post.save()
+                        .then(post => {
+                            res.status(200).send(post);
+                        })
+                }
+                else{
+                    res.status(404).send(post);
                 }
 
             })

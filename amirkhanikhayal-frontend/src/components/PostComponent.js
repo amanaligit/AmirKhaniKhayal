@@ -1,31 +1,32 @@
-import { faDumpster, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 import React from 'react'
 import Posts from './Posts'
 import { useAuth0 } from "@auth0/auth0-react";
 
-function PostComponent({ post, setPosts }) {
-    const serverUrl = process.env.REACT_APP_SERVER_URL;
-    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+function PostComponent({ post, setPosts, setDeletePost, toggleEditModal, toggleDeleteModal, setEditPost }) {
 
-    const handleDelete = async (postId) => {
-        const token = await getAccessTokenSilently();
-        console.log(`deleting post ${postId}`);
-        axios.delete(`${serverUrl}/postsrouter/${postId}`, { headers: { Authorization: `Bearer ${token}` } })
-            .then(response => {
-                if (response.status === 200) {
-                    setPosts(posts => posts.filter((post, index, arr) => post.id !== postId));
-                }
+    const { isAuthenticated } = useAuth0();
 
-            })
-            .catch(err => console.log(err))
-    }
     return (
         <div className=" container mt-3 align-items-center " style={{ borderRadius: "10px", border: "2px solid grey", padding: "20px", }} >
+            {isAuthenticated &&
+                <div className="row justify-content-end">
+                    <button name="Delete Post" onClick={() => {
+                        setDeletePost(post);
+                        toggleDeleteModal(true);
+                    }} className="btn btn-danger mr-3">{<FontAwesomeIcon icon={faTrash} />}Delete Post</button>
+                     <button  onClick={() => {
+                        setEditPost(post);
+                        toggleEditModal(true);
+                    }} className="btn btn-info mr-3" name="Edit Post">{<FontAwesomeIcon icon={faEdit} />}Edit Post</button>
+                </div>
+            }
             <h1 style={{ textAlign: "center", fontFamily: "poppins" }} >{post.title}</h1>
-            <p>{post.text}</p>
-            {isAuthenticated && <button onClick={() => handleDelete(post.id)}>{<FontAwesomeIcon icon={faTrash} />}</button>}
+            <br></br>
+            <p style={{ whiteSpace: "pre-wrap" }}>{post.text}</p>
+
         </div>
     )
 }
