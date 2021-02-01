@@ -3,7 +3,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import axios from 'axios'
 import { useAuth0 } from "@auth0/auth0-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBackward, faCross, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import LoadingSmall from "./LoadingSmall";
@@ -19,7 +19,6 @@ function EditModal({ post, isModalOpen, toggleModal, setPosts }) {
 
     const handleEdit = async (data) => {
         setLoading(true);
-        console.log(post.id);
         const token = await getAccessTokenSilently();
         console.log(`Editing post ${post.id}`);
         axios.put(`${serverUrl}/postsrouter/${post.id}`, data, { headers: { Authorization: `Bearer ${token}` } })
@@ -68,10 +67,7 @@ function EditModal({ post, isModalOpen, toggleModal, setPosts }) {
                                 }
 
                             </div>
-
-
-
-                            <input type="submit" className="btn btn-primary center" />
+                            <button type="submit" className="btn btn-primary center"><FontAwesomeIcon icon={faPaperPlane}/>Submit</button>
                             {error &&
                                 <div class="alert alert-danger mt-2">
                                     <span>{error}</span>

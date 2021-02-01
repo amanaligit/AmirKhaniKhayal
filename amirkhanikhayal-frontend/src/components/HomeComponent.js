@@ -15,7 +15,6 @@ function Home(props) {
     const [search, setSearch] = useState("");
     const [searchFromClick, setSteachFromClick] = useState("");
     const [searchResults, setSearchResults] = useState({ pages: [], subpages: [] });
-    const {isAuthenticated} = useAuth0();
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_SERVER_URL}/pagerouter`)

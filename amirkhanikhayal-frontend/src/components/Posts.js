@@ -1,26 +1,22 @@
 // src/views/external-api.js
 
 import React, { useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import Loading from "./loading";
-import { useForm } from "react-hook-form";
 import PostComponent from "./PostComponent";
 import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal"
 import NewPostModal from "./NewPostModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import { faExclamation, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import LoadingSmall from "./LoadingSmall";
+import useAdminStatus from "../hooks/useAdminStatus";
 
 const Posts = () => {
 
   const serverUrl = process.env.REACT_APP_SERVER_URL;
-  const { getAccessTokenSilently } = useAuth0();
-  const { user, isAuthenticated } = useAuth0();
+  const isAdmin = useAdminStatus();
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(true);
-  const [postError, setPostError] = useState(null);
   const [isDeleteModalOpen, toggleDeleteModal] = useState(false);
   const [deletePost, setDeletePost] = useState(null);
   const [isEditModalOpen, toggleEditModal] = useState(false);
@@ -44,7 +40,7 @@ const Posts = () => {
 
   return (
     <div className="container">
-      {isAuthenticated &&
+      {isAdmin &&
         <>
           <button className="btn btn-primary btn-lg mt-5 mb-2" onClick={() => toggleNewPostModal(true)}><FontAwesomeIcon icon={faPencilAlt} />New Post</button>
           <DeleteModal isModalOpen={isDeleteModalOpen} toggleModal={toggleDeleteModal} post={deletePost} setPosts={setPosts} />
@@ -54,7 +50,7 @@ const Posts = () => {
 
       <h1>Posts</h1>
       { loadingError && <div class="alert alert-danger mt-2">
-        <span>{loadingError}</span>
+        <span><FontAwesomeIcon icon={faExclamation}/>{loadingError}</span>
       </div>}
       { postsLoading ? <LoadingSmall /> : (
         <>

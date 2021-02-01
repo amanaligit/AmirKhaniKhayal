@@ -33,7 +33,7 @@ postsRouter.route("/")
                 promises = posts.map(async post => {
                     let author = await post.getUser({ attributes: ["Name", "image"] });
                     author = author.toJSON();
-                    return { title: post.title, text: post.text, author, id: post.id, createdAt: post.createdAt }
+                    return { title: post.title, text: post.text, author, id: post.id, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt ))) }
                 })
                 Promise.all(promises)
                     .then(result => {
@@ -51,7 +51,7 @@ postsRouter.route("/")
                     .then(async post => {
                         let author = await post.getUser();
                         author = author.toJSON();
-                        res.status(200).send({ title: post.title, text: post.text, author, id: post.id, createdAt: post.createdAt  })
+                        res.status(200).send({ title: post.title, text: post.text, author, id: post.id, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt )))  })
                     }
                     )
             })
