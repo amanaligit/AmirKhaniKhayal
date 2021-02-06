@@ -3,9 +3,9 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import axios from 'axios'
 import { useAuth0 } from "@auth0/auth0-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBackward, faCross, faPaperPlane, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faPray } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingSmall from "./LoadingSmall";
 
 function NewPostModal({ isModalOpen, toggleModal, setPosts }) {
@@ -16,22 +16,32 @@ function NewPostModal({ isModalOpen, toggleModal, setPosts }) {
     const [postError, setPostError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        setPostError(null);
+    }, [isModalOpen]);
 
     const onSubmit = async data => {
+        console.log(data);
         setPostError(null);
         setLoading(true);
-        data.name = user.name;
-        data.email = user.email;
-        data.image = user.picture;
+        const formData = new FormData();
+        for (let index = 0; index < data.images.length; index++) {
+            const element = data.images[index];
+            formData.append('images', element);
+        }
+        formData.append('name', user.name);
+        formData.append('email', user.email);
+        formData.append('image', user.picture);
+        formData.append('text', data.text);
+        formData.append('title', data.title);
         const token = await getAccessTokenSilently();
-        axios.post(`${serverUrl}/postsrouter/`, data, { headers: { Authorization: `Bearer ${token}` } })
+        axios.post(`${serverUrl}/postsrouter/`, formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } })
             .then(response => {
                 if (response.status === 200) {
                     setLoading(false);
                     setPosts(posts => [response.data, ...posts]);
                     reset();
                     toggleModal(false);
-
                 }
             }).catch(err => {
                 setLoading(false);
@@ -70,7 +80,8 @@ function NewPostModal({ isModalOpen, toggleModal, setPosts }) {
                                 }
 
                             </div>
-
+                            <label htmlFor="input1">Upload Images: </label>
+                            <input type="file" name="images" id="images" className="form-control-file mb-3" multiple ref={register()} />
                             {/* include validation with required or other standard HTML validation rules */}
 
                             {/* errors will return when field validation fails  */}
@@ -79,7 +90,7 @@ function NewPostModal({ isModalOpen, toggleModal, setPosts }) {
                             <button type="submit" className="btn btn-primary center" ><FontAwesomeIcon icon={faPaperPlane} />Submit Post</button>
 
                             {postError &&
-                                <div class="alert alert-danger mt-2">
+                                <div className="alert alert-danger mt-2">
                                     <span>{postError}</span>
                                 </div>}
                         </form>

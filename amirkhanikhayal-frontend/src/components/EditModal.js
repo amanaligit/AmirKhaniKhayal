@@ -5,7 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingSmall from "./LoadingSmall";
 
 
@@ -17,6 +17,10 @@ function EditModal({ post, isModalOpen, toggleModal, setPosts }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    useEffect(()=>{
+        setError(null);
+    }, [isModalOpen]);
+    
     const handleEdit = async (data) => {
         setLoading(true);
         const token = await getAccessTokenSilently();

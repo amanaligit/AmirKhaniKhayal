@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
-import { Switch, Route, Redirect  } from 'react-router-dom';
+import { Switch, Route  } from 'react-router-dom';
 import Home from './HomeComponent';
 import Loading from "./loading";
 import { useAuth0 } from "@auth0/auth0-react";
