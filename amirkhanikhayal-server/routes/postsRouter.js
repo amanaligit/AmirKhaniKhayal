@@ -44,7 +44,7 @@ postsRouter.route("/")
                 promises = posts.map(async post => {
                     let author = await post.getUser({ attributes: ["Name", "image"] });
                     author = author.toJSON();
-                    return { title: post.title, text: post.text, author, id: post.id, images: post.images, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt))) }
+                    return { title: post.title, text: post.text, author, id: post.id, images: post.images, ytlinks: post.ytlinks, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt))) }
                 })
                 Promise.all(promises)
                     .then(result => {
@@ -65,12 +65,12 @@ postsRouter.route("/")
                     images = images.concat(`${file.filename}|`);
                 }
 
-                Post.create({ title: req.body.title, text: req.body.text, UserId: user.id, images: images })
+                Post.create({ title: req.body.title, text: req.body.text, UserId: user.id, images: images, ytlinks: req.body.ytlinks })
                     .then(async post => {
                         console.log(images);
                         let author = await post.getUser();
                         author = author.toJSON();
-                        res.status(200).send({ title: post.title, text: post.text, images: post.images, author, id: post.id, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt))) })
+                        res.status(200).send({ title: post.title, text: post.text, images: post.images, author, id: post.id, ytlinks: post.ytlinks, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt))) })
                     }
                     )
             })

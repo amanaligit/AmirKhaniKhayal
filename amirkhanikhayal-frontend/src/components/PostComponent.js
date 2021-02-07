@@ -11,7 +11,6 @@ import {
 } from 'reactstrap';
 import { useState } from 'react';
 function PostComponent({ post, setPosts, setDeletePost, toggleEditModal, toggleDeleteModal, setEditPost }) {
-
     const [activeIndex, setActiveIndex] = useState(0);
     const [animating, setAnimating] = useState(false);
     const isAdmin = useAdminStatus();
@@ -19,6 +18,12 @@ function PostComponent({ post, setPosts, setDeletePost, toggleEditModal, toggleD
     if (post.images) {
         images = post.images.split("|");
         images.pop();
+    }
+
+    var ytlinks = []
+    if (post.ytlinks) {
+        ytlinks = post.ytlinks.split(" ");
+        ytlinks.pop();
     }
     const next = () => {
         if (animating) return;
@@ -42,8 +47,12 @@ function PostComponent({ post, setPosts, setDeletePost, toggleEditModal, toggleD
                 onExiting={() => setAnimating(true)}
                 onExited={() => setAnimating(false)}
                 key={item}
+
             >
-                <img src={`${process.env.REACT_APP_SERVER_URL}/uploads/images/${item}`} alt="post" className="img-fluid" />
+                <div className="row justify-content-center">
+                    <img src={`${process.env.REACT_APP_SERVER_URL}/uploads/images/${item}`} alt="post" className="post-img img-fluid" />
+                </div>
+
             </CarouselItem>
         );
     });
@@ -69,6 +78,7 @@ function PostComponent({ post, setPosts, setDeletePost, toggleEditModal, toggleD
                 activeIndex={activeIndex}
                 next={next}
                 previous={previous}
+                className="mb-5"
             >
                 <CarouselIndicators items={images} activeIndex={activeIndex} onClickHandler={goToIndex} />
                 {slides}
@@ -76,7 +86,15 @@ function PostComponent({ post, setPosts, setDeletePost, toggleEditModal, toggleD
                 <CarouselControl direction="next" directionText="Next" onClickHandler={next} />
             </Carousel>}
             {images.length === 1 &&
-                <img src={`${process.env.REACT_APP_SERVER_URL}/uploads/images/${images[0]}`} alt="post" className="img-fluid" />
+                <img src={`${process.env.REACT_APP_SERVER_URL}/uploads/images/${images[0]}`} alt="post" className="img-fluid mb-5" />
+            }
+            {ytlinks.length > 0 ? ytlinks.map(link => {
+                return (<div className="video-container mt-5 mb-5" key={link}>
+                    <iframe className="responsive-iframe" title={link} src={`https://www.youtube.com/embed/${link}`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen={true}></iframe>
+                </div>)
+            })
+                : null
+
             }
             <p style={{ whiteSpace: "pre-wrap" }}>{post.text}</p>
             <br />
