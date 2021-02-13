@@ -21,7 +21,7 @@ const Profile = () => {
               className="rounded-circle img-fluid profile-picture mb-3 mb-md-0"
             />
           </div>
-          <div className="row justify-content-center">{isAdmin ? <h3><span class="badge badge-primary">Admin</span></h3> : <h3><span class="badge badge-primary">User</span></h3>}</div>
+          <div className="row justify-content-center">{isAdmin ? <h3><span className="badge badge-primary">Admin</span></h3> : <h3><span className="badge badge-primary">User</span></h3>}</div>
 
         </div>
         <div className="col-md text-center text-md-left">

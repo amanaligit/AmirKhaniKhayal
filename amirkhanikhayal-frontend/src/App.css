@@ -16,6 +16,15 @@
   max-height: 37rem;
 }
 
+/* .carousel-img{
+    max-width: 100%;
+   height: auto;
+     height: 37rem;
+  max-height: 37rem;
+    width: auto;
+
+} */
+
 .video-container {
   position: relative;
   overflow: hidden;
@@ -41,10 +50,12 @@
 }
 .jumbotron {
     padding:70px 30px 70px 30px;
-    margin:0px !important;
-    background: #9575CD !important;
-    color:floralwhite;
+    margin-bottom:0px !important;
+    background: #9fd0ff  !important;
+    color: rgb(49, 49, 49)!important;
 }
+
+
 
 .spinner {
   position: absolute;
@@ -59,6 +70,9 @@
   margin: 0 auto;
 }
 
+p{
+  font-family: poppins;
+}
 .center {
   display: flex  !important; 
   justify-content: center  !important;
@@ -72,7 +86,7 @@ address{
 }
 
 .navbar-dark {
-    background-color: #512DA8;
+    background-color: #0e6ec9;
 }
 
 .page-enter {
@@ -107,13 +121,7 @@ body {
   font-family: "Poppins", sans-serif;
   background: #fafafa;
 }
-p {
-  font-family: "Poppins", sans-serif;
-  font-size: 1.1em;
-  font-weight: 300;
-  line-height: 1.7em;
-  color: #999;
-}
+
 h1,
 h2,
 h3,
@@ -144,18 +152,18 @@ a:focus {
 #sidebar {
   min-width: 20rem;
   max-width: 20rem;
-  background: #7386d5;
+  background: #178efd;
   color: #fff;
   transition: all 0.3s;
 }
 
 #sidebar .sidebar-header {
   padding: 20px;
-  background: #6d7fcc;
+  background: #178efd;
 }
 #sidebar ul.components {
   padding: 20px 0;
-  border-bottom: 1px solid #47748b;
+  border-bottom: 1px solid #0e6ec9;
 }
 
 #sidebar ul p {
@@ -170,14 +178,25 @@ a:focus {
   color: white
 }
 
-#sidebar ul li a:hover {
-  color: #7386d5;
+#sidebar .pagediv:hover {
+  color: #0e6ec9;
   background: #fff;
 }
-#sidebar ul li.active > a,
-a[aria-expanded="true"] {
+
+#sidebar .pagediv:hover a{
+  color: #0e6ec9;
+  background: #fff;
+}
+
+
+#sidebar ul li a:hover {
+  color: #0e6ec9;
+  background: #fff;
+}
+#sidebar ul  li.active div
+{
   color: #fff;
-  background: #6d7fcc;
+  background:#0e6ec9;
 }
 
 a[data-toggle="collapse"] {
@@ -191,11 +210,18 @@ a[data-toggle="collapse"] {
   right: 20%;
   transform: translateY(-50%);
 }
-ul ul a {
+ul li.active ul a {
   font-size: 0.9em !important;
   padding-left: 30px !important;
-  background: #6d7fcc;
+  background: #0e6ec9;
 }
+
+ul li ul a {
+  font-size: 0.9em !important;
+  padding-left: 30px !important;
+}
+
+
 
 #content {
   width: 100%;

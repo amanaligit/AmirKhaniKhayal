@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import {Button} from 'reactstrap'
+import { Button } from 'reactstrap'
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -13,8 +13,8 @@ const LoginButton = () => {
     // >
     //   Log In
     // </button>
-    <Button outline onClick={() => loginWithRedirect()}>
-    <span className="fa fa-sign-in fa-lg"></span> Login
+    <Button color="info" onClick={() => loginWithRedirect()}>
+      <span className="fa fa-sign-in fa-lg"></span> Login
     </Button>
   );
 };

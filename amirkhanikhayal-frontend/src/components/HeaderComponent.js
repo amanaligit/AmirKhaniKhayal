@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {
     Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Jumbotron,
-     Modal, ModalHeader, ModalBody,
-    Form, FormGroup, Input, Label
 } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import AuthenticationButton from "./authentication-button";
@@ -15,7 +13,6 @@ class Header extends Component {
         super(props);
         this.state = {
             isNavOpen: false,
-            isModalOpen: false
         };
         this.toggleNav = this.toggleNav.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
@@ -49,7 +46,7 @@ class Header extends Component {
     render() {
         return (
             <React.Fragment>
-                <Navbar dark expand="md">
+                <Navbar dark expand="md" sticky={'top'}>
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav} />
                         <NavbarBrand className="mr-auto" href="/">
@@ -57,7 +54,7 @@ class Header extends Component {
                                 alt="Ristorante Con Fusion" />
                         </NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
-                            <Nav navbar>
+                            <Nav navbar className="ml-auto">
                                 <NavItem>
                                     <NavLink className="nav-link" to="" exact>
                                         <span className="fa fa-home fa-lg"></span> Home
@@ -69,8 +66,8 @@ class Header extends Component {
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/menu">
-                                        <span className="fa fa-list fa-lg"></span> Menu
+                                    <NavLink className="nav-link" to="/content/1">
+                                        <span className="fa fa-list fa-lg"></span> Ustad Amir khan
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
@@ -107,7 +104,7 @@ class Header extends Component {
                         </Collapse>
                     </div>
                 </Navbar>
-                <Jumbotron>
+                {/* <Jumbotron>
                     <div className="container">
                         <div className="row row-header">
                             <div className="col-12 col-sm-6">
@@ -116,32 +113,8 @@ class Header extends Component {
                             </div>
                         </div>
                     </div>
-                </Jumbotron>
-                <Modal isOpen={this.state.isModalOpen}  toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
-                    <ModalBody>
-                        <Form onSubmit={this.handleLogin}>
-                            <FormGroup>
-                                <Label htmlFor="username">Username</Label>
-                                <Input type="text" id="username" name="username"
-                                    innerRef={(input) => this.username = input} />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label htmlFor="password">Password</Label>
-                                <Input type="password" id="password" name="password"
-                                    innerRef={(input) => this.password = input} />
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label check>
-                                    <Input type="checkbox" name="remember"
-                                        innerRef={(input) => this.remember = input} />
-                                    Remember me
-                                </Label>
-                            </FormGroup>
+                </Jumbotron> */}
 
-                        </Form>
-                    </ModalBody>
-                </Modal>
             </React.Fragment>
         );
     }
