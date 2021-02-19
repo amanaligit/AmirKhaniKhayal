@@ -6,6 +6,7 @@ import { Markup } from 'interweave';
 import { useAuth0 } from "@auth0/auth0-react";
 import NavComponent from './NavComponent';
 import CarouselComponent from './CarouselComponent';
+import FeaturedPosts from './FeaturedPosts';
 
 
 function Home(props) {
@@ -23,9 +24,10 @@ function Home(props) {
                     </p>
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-2">
-                        <a href="#"><butt type="button" class="btn btn-outline-secondary">Go to Contents</butt></a>
+                        <a href="#"><button type="button" className="btn btn-outline-secondary">Go to Contents</button></a>
                     </div>
                 </div>
+                <FeaturedPosts />
             </div>
 
         </>

@@ -43,8 +43,20 @@
   height: 100%;
 }
 
+
+
+.rec.rec-arrow:hover {
+    border-radius: 0%;
+    background-color:#178efd !important;
+}
+
+.rec-dot_active{
+  background-color:#178efd !important;
+  box-shadow: 0 0 1px 3px #178efd !important;
+}
+
 .footer{
-    background-color: #D1C4E9;
+    background-color: #9fd0ff;
     margin:0px auto;
     padding: 20px 0px 20px 0px;
 }
@@ -129,6 +141,12 @@ h4,
 h5{
   font-family: "Poppins", sans-serif;
 }
+
+.post-card{
+  position:relative;
+   height: 36rem ;
+}
+
 a,
 a:hover,
 a:focus {

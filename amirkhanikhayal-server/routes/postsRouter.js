@@ -39,18 +39,18 @@ const Post = models.Post;
 
 postsRouter.route("/")
     .get((req, res) => {
-        Post.findAll({ order: [['createdAt', 'DESC']] })
-            .then(posts => {
-                promises = posts.map(async post => {
-                    let author = await post.getUser({ attributes: ["Name", "image"] });
-                    author = author.toJSON();
-                    return { title: post.title, text: post.text, author, id: post.id, images: post.images, ytlinks: post.ytlinks, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt))) }
-                })
-                Promise.all(promises)
-                    .then(result => {
-                        res.status(200).send(result);
-                    })
+        posts = req.query.featured === "true" ? Post.findAll({ order: [['createdAt', 'DESC']], where: { featured: true } }) : Post.findAll({ order: [['createdAt', 'DESC']] });
+        posts.then(posts => {
+            promises = posts.map(async post => {
+                let author = await post.getUser({ attributes: ["Name", "image"] });
+                author = author.toJSON();
+                return { title: post.title, text: post.text, author, id: post.id, images: post.images, ytlinks: post.ytlinks, createdAt: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(post.createdAt))) }
             })
+            Promise.all(promises)
+                .then(result => {
+                    res.status(200).send(result);
+                })
+        })
     })
     .post(checkJwt, checkPermissions, upload.array('images', 10), (req, res) => {
         console.log(req.body.post);
@@ -65,7 +65,7 @@ postsRouter.route("/")
                     images = images.concat(`${file.filename}|`);
                 }
 
-                Post.create({ title: req.body.title, text: req.body.text, UserId: user.id, images: images, ytlinks: req.body.ytlinks })
+                Post.create({ title: req.body.title, text: req.body.text, UserId: user.id, images: images, ytlinks: req.body.ytlinks, featured: req.body.featured })
                     .then(async post => {
                         console.log(images);
                         let author = await post.getUser();

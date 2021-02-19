@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     text: DataTypes.TEXT,
     UserId: DataTypes.INTEGER,
     images: DataTypes.STRING,
-    ytlinks: DataTypes.STRING
+    ytlinks: DataTypes.STRING,
+    featured: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Post',

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faSearch, faToggleOff, faToggleOn } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faArrowCircleLeft, faSearch, faToggleOff, faToggleOn } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 
-function NavComponent({ setHtml, page: currentPage, setLoading, pages, toggle, setToggle }) {
+function NavComponent({ page: currentPage, pages, toggle, setToggle }) {
     const [search, setSearch] = useState("");
     const [searchFromClick, setSeachFromClick] = useState("");
     const [searchResults, setSearchResults] = useState(null);
@@ -26,7 +26,7 @@ function NavComponent({ setHtml, page: currentPage, setLoading, pages, toggle, s
                 {page.subpages.length ?
                     <React.Fragment>
                         <div className="pagediv ">
-                            <Link to={`/content/${page.id}`} className=" d-inline-block"> {page.Title}   </Link>
+                            <Link to={`/content/${page.id}`} className=" d-inline-block">{page.Order}. {page.Title}   </Link>
                             <FontAwesomeIcon icon={faAngleDown} href={`#menu${page.id}`}
                                 data-toggle="collapse"
                                 className="float-right mr-3 mt-3 dropdown-toggle" style={{ cursor: "pointer" }} />
@@ -35,17 +35,18 @@ function NavComponent({ setHtml, page: currentPage, setLoading, pages, toggle, s
                         <ul className={`collapse ${page.id === parseInt(currentPage.id) && "show"} list-unstyled`} id={`menu${page.id}`} key={page.id}>
                             {page.subpages.map(subpage => {
                                 return (<li key={subpage.id}>
-                                    <Link to={`/content/${page.id}/${subpage.id}`}> {page.Title} </Link>
+                                    <Link to={`/content/${page.id}/${subpage.id}`}> {subpage.Order}. {subpage.Title} </Link>
                                 </li>)
                             })}
                         </ul>
                     </React.Fragment>
                     :
-                    <Link to={`/content/${page.id}`}> {page.Title} </Link>
+                    <div className="pagediv ">
+                        <Link to={`/content/${page.id}`} className={page.id === parseInt(currentPage.id) ? "active" : undefined}> {page.Order}. {page.Title} </Link>
+                    </div>
 
                 }
-            </li>
-
+            </li >
         )
     });
 
@@ -67,10 +68,10 @@ function NavComponent({ setHtml, page: currentPage, setLoading, pages, toggle, s
         <>
             <nav id="sidebar" className={toggle ? "" : "active"}>
                 <div className="sidebar-header" >
-                    {toggle ? <button type="button" id="sidebarCollapse" className="btn btn-info" onClick={() => setToggle(t => !t)}>
-                        <FontAwesomeIcon icon={toggle ? faToggleOn : faToggleOff} />
-                            Hide Index
-                        </button> : null}
+                    {toggle ? <button type="button" id="sidebarCollapse" className="btn btn-lg" style={{ borderRadius: "100%", color: "white" }} onClick={() => setToggle(t => !t)}>
+                        <FontAwesomeIcon size="lg" icon={faArrowCircleLeft} />
+
+                    </button> : null}
                 </div>
                 <div className="input-group" style={{ marginLeft: "35px" }}>
                     <div className="form-outline">

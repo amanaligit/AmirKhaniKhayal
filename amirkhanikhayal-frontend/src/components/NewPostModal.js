@@ -72,6 +72,7 @@ function NewPostModal({ isModalOpen, toggleModal, setPosts }) {
         formData.append('image', user.picture);
         formData.append('text', data.text);
         formData.append('title', data.title);
+        formData.append('featured', data.featured)
         const token = await getAccessTokenSilently();
         axios.post(`${serverUrl}/postsrouter/`, formData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } })
             .then(response => {
@@ -107,6 +108,10 @@ function NewPostModal({ isModalOpen, toggleModal, setPosts }) {
                                     <span>{errors.title.message}</span>
                                 </div>
                             }
+                        </div>
+                        <div className="form-check">
+                            <input type="checkbox" className="form-check-input" name="featured" ref={register} />
+                            <label className="form-check-label">Feature on home Page?</label>
                         </div>
                         <div className="form-group">
                             <label htmlFor="text">Text</label>

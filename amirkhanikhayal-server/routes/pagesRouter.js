@@ -18,6 +18,7 @@ pagesRouter.route('/')
                     let page_js = {};
                     page_js.Title = page.Title;
                     page_js.id = page.id;
+                    page_js.Order = page.Order;
                     page_js.subpages = await page.getSubPages({ attributes: ["Title", "id", "Order"], order: [['Order', 'ASC']] });
                     return page_js;
                 });
